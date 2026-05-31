@@ -1,13 +1,11 @@
-#!/bin/bash
+git config --global user.email "backup@system.com"
+git config --global user.name "backup-bot"
 
-echo "Starting backup..."
+git clone https://github.com/YOUR_USERNAME/YOUR_BACKUP_REPO.git
 
-pg_dump "$DATABASE_URL" > backup.sql
+cp backup.sql YOUR_BACKUP_REPO/
 
-echo "Uploading backup..."
-
-curl --upload-file backup.sql https://transfer.sh/inventra_backup.sql
-
-echo "Backup completed - download link generated"
-
-sleep 3600
+cd YOUR_BACKUP_REPO
+git add .
+git commit -m "DB backup $(date)"
+git push
