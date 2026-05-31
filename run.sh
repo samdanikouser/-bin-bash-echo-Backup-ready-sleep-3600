@@ -1,11 +1,23 @@
-git config --global user.email "backup@system.com"
-git config --global user.name "backup-bot"
+#!/bin/bash
 
-git clone https://github.com/YOUR_USERNAME/YOUR_BACKUP_REPO.git
+echo "Starting backup..."
 
-cp backup.sql YOUR_BACKUP_REPO/
+pg_dump "$DATABASE_URL" > backup.sql
 
-cd YOUR_BACKUP_REPO
+echo "Cloning backup repo..."
+
+git clone https://github.com/samdanikouser/db-backups.git
+
+cd db-backups
+
+cp ../backup.sql ./backup-$(date +%Y-%m-%d-%H-%M).sql
+
+git config user.email "backup@system.com"
+git config user.name "render-backup-bot"
+
 git add .
 git commit -m "DB backup $(date)"
 git push
+
+echo "Backup stored in GitHub repo"
+sleep 3600
